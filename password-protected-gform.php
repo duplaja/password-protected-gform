@@ -3,7 +3,7 @@
 Plugin Name: Password Protected GForm
 Plugin URI: https://dandulaney.com
 Description: Require a value for a field to match in order for form to submit
-Version: 1.0
+Version: 1.1
 Author: Dan Dulaney
 Author URI: https://dandulaney.com
 License: GPLv2
@@ -50,6 +50,7 @@ if ( ! function_exists( 'gf_password_activate_check' ) ) {
         }
     }
 }
+   
 	
 if ( ! function_exists( 'gf_password_protect_validation' ) ) {
 	/**
@@ -62,8 +63,12 @@ if ( ! function_exists( 'gf_password_protect_validation' ) ) {
     add_filter( 'gform_field_validation', 'gf_password_protect_validation', 10, 4 );	
 	function gf_password_protect_validation( $result, $value, $form, $field ) {
 
-        
-        if($result['is_valid'] && !empty($form['form_password_to_submit']) && !empty($form['form_password_field_id']) && $field->id == $form['form_password_field_id'] && $value != $form['form_password_to_submit']) {
+	//Converts password saved string to array
+        if(!empty($form['form_password_to_submit']) && $field->id == $form['form_password_field_id']) {
+            $passwords_array = explode(',',$form['form_password_to_submit']);
+        }
+
+        if($result['is_valid'] && !empty($form['form_password_to_submit']) && !empty($form['form_password_field_id']) && $field->id == $form['form_password_field_id'] && !in_array($value,$passwords_array)) {
 
             $result['is_valid'] = false;
 
@@ -74,7 +79,8 @@ if ( ! function_exists( 'gf_password_protect_validation' ) ) {
             }
             $result['message'] = $message;
 
-        }
+        } 
+
         return $result;
         
     }
@@ -92,8 +98,8 @@ if ( ! function_exists( 'gf_password_to_submit' ) ) {
     function gf_password_to_submit( $settings, $form ) {
         $settings[ __( 'Form Options', 'gravityforms' ) ]['form_password_to_submit'] = '
             <tr>
-                <th><label for="form_password_to_submit">Required Password To Submit<br>(blank for none)</label></th>
-                <td><input value="' . rgar($form, 'form_password_to_submit') . '" name="form_password_to_submit"></td>
+                <th><label for="form_password_to_submit">Required Password(s) To Submit<br>(blank for none)<br>Comma seperated for multiple, spaces will be stripped</label></th>
+                <td><textarea name="form_password_to_submit" class="fieldwidth-3 fieldheight-2">'.rgar($form, 'form_password_to_submit').'</textarea></td>
             </tr>
             <tr>
                 <th><label for="form_password_field_id">Field ID for Password Check<br>(blank for none)</label></th>
@@ -119,7 +125,10 @@ if ( ! function_exists( 'gf_save_password_to_submit' ) ) {
 
     add_filter( 'gform_pre_form_settings_save', 'gf_save_password_to_submit' );
     function gf_save_password_to_submit($form) {
-        $form['form_password_to_submit'] = rgpost( 'form_password_to_submit' );
+
+        $pw = str_replace(' ','',rgpost( 'form_password_to_submit' ));
+
+        $form['form_password_to_submit'] = $pw;
         $form['form_password_field_id'] = rgpost( 'form_password_field_id' );
         $form['form_password_custom_message'] = rgpost( 'form_password_custom_message' );
 
