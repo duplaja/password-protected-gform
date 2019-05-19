@@ -9,7 +9,7 @@ Password Protect Gravity Forms on a Per-Form basis
 * Set the password, field ID, and validation message (if desired)
 
 ## Suggestions
-* If using a comma seperated list of passwords, you can set the field option "no duplicates" to prevent the same password from being used more than once.
+* If using a comma separated list of passwords, you can set the field option "no duplicates" to prevent the same password from being used more than once.
 * You can, on the text field, go to Advanced Options and choose "Enable Password Input" to mask what's entered
 
 ## Changelog
