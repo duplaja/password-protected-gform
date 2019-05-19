@@ -98,7 +98,7 @@ if ( ! function_exists( 'gf_password_to_submit' ) ) {
     function gf_password_to_submit( $settings, $form ) {
         $settings[ __( 'Form Options', 'gravityforms' ) ]['form_password_to_submit'] = '
             <tr>
-                <th><label for="form_password_to_submit">Required Password(s) To Submit<br>(blank for none)<br>Comma seperated for multiple, spaces will be stripped</label></th>
+                <th><label for="form_password_to_submit">Required Password(s) To Submit<br>(blank for none)<br>Comma separated for multiple, spaces will be stripped</label></th>
                 <td><textarea name="form_password_to_submit" class="fieldwidth-3 fieldheight-2">'.rgar($form, 'form_password_to_submit').'</textarea></td>
             </tr>
             <tr>
